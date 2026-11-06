@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220" width="400" height="220" role="img" aria-label="Sacrament tray and bread emblem">
+  <rect width="400" height="220" fill="#f2efe9" rx="12" />
+  <circle cx="200" cy="110" r="78" fill="#ffffff" stroke="#d9d1c3" stroke-width="2" />
+  <!-- Cup & Tray Silhouette -->
+  <path d="M 130 142 L 270 142 L 258 156 L 142 156 Z" fill="#003057" />
+  <path d="M 155 142 A 45 36 0 0 1 245 142 Z" fill="#006184" opacity="0.9" />
+  <path d="M 192 92 L 208 92 L 204 106 L 196 106 Z" fill="#b3884d" />
+  <line x1="200" y1="74" x2="200" y2="92" stroke="#b3884d" stroke-width="3" stroke-linecap="round" />
+  <line x1="191" y1="82" x2="209" y2="82" stroke="#b3884d" stroke-width="3" stroke-linecap="round" />
+</svg>
+
