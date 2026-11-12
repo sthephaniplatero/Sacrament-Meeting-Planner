@@ -21,7 +21,9 @@ async function CurrentSundayRedirect(): Promise<never> {
   sunday.setDate(today.getDate() - dayOfWeek);
 
   const sundayIso: string = formatIsoDate(sunday);
-  const matchingMeetings: SacramentMeeting[] = getMeetings(sundayIso);
+  const matchingMeetings: SacramentMeeting[] = await getMeetings({
+    date: sundayIso,
+  });
 
   if (matchingMeetings.length > 0) {
     redirect(`/meetings/${matchingMeetings[0].id}`);

@@ -1,12 +1,34 @@
+import { cache, Suspense } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import MeetingCard from '@/components/MeetingCard';
 import { getMeetings } from '@/lib/meetings-db';
 import type { SacramentMeeting } from '@/lib/types';
 
-export default function HomePage() {
-  const allMeetings: SacramentMeeting[] = getMeetings();
+// Dedupe the DB query across the components below within one request.
+const loadAllMeetings = cache(
+  (): Promise<SacramentMeeting[]> => getMeetings()
+);
+
+async function MeetingCount() {
+  const allMeetings = await loadAllMeetings();
+  return <>{allMeetings.length}</>;
+}
+
+async function FeaturedMeetings() {
+  const allMeetings = await loadAllMeetings();
   const featuredMeetings: SacramentMeeting[] = allMeetings.slice(0, 2);
+
+  return (
+    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+      {featuredMeetings.map((meeting: SacramentMeeting) => (
+        <MeetingCard key={meeting.id} meeting={meeting} />
+      ))}
+    </div>
+  );
+}
+
+export default function HomePage() {
 
   return (
     <div className="mx-auto max-w-6xl space-y-14 px-4 py-8 sm:px-6 sm:py-12">
@@ -47,7 +69,7 @@ export default function HomePage() {
                 href="/meetings"
                 className="inline-flex items-center rounded-md border border-border bg-surface-muted px-5 py-2.5 text-sm font-semibold text-foreground hover:bg-border/40 transition-colors"
               >
-                Browse All Meetings ({allMeetings.length})
+                Browse All Meetings (<Suspense fallback="…"><MeetingCount /></Suspense>)
               </Link>
             </div>
           </div>
@@ -144,15 +166,15 @@ export default function HomePage() {
             href="/meetings"
             className="text-sm font-semibold text-primary hover:underline"
           >
-            View Complete Directory ({allMeetings.length}) &rarr;
+            View Complete Directory (<Suspense fallback="…"><MeetingCount /></Suspense>) &rarr;
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          {featuredMeetings.map((meeting: SacramentMeeting) => (
-            <MeetingCard key={meeting.id} meeting={meeting} />
-          ))}
-        </div>
+        <Suspense
+          fallback={<p className="text-sm text-muted">Loading meetings…</p>}
+        >
+          <FeaturedMeetings />
+        </Suspense>
       </section>
     </div>
   );

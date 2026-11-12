@@ -58,7 +58,8 @@ async function fetchMeetingByIdFromApi(
     }
 
     const numericId: number = Number.parseInt(id, 10);
-    const meeting: SacramentMeeting | null = getMeetingById(numericId);
+    const meeting: SacramentMeeting | null =
+      (await getMeetingById(numericId)) ?? null;
     if (!meeting) {
       return {
         status: 404,
