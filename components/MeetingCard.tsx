@@ -122,18 +122,6 @@ export default function MeetingCard({ meeting }: Readonly<MeetingCardProps>) {
           )}
         </div>
 
-        <Link
-            href={`/meetings/${meeting.id}/edit`}
-            className="font-semibold text-primary hover:underline"
-          >
-            Edit<span className="sr-only"> meeting on {formatMeetingDate(meeting.date)}</span>
-          </Link>
-          <DeleteMeetingButton
-            id={meeting.id}
-            label={formatMeetingDate(meeting.date)}
-        />
-
-
         <div className="flex flex-wrap items-center gap-3">
           <Link
             href={`/meetings/${meeting.id}?print=true`}
@@ -147,6 +135,16 @@ export default function MeetingCard({ meeting }: Readonly<MeetingCardProps>) {
           >
             Open Agenda &rarr;
           </Link>
+          <Link
+            href={`/meetings/${meeting.id}/edit`}
+            className="font-semibold text-primary hover:underline"
+          >
+            Edit<span className="sr-only"> meeting on {formatMeetingDate(meeting.date)}</span>
+          </Link>
+          <DeleteMeetingButton
+            id={meeting.id}
+            label={formatMeetingDate(meeting.date)}
+          />
         </div>
       </div>
     </article>
