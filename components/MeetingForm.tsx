@@ -181,8 +181,8 @@ export default function MeetingForm({ action, meeting, submitLabel }: MeetingFor
 
       <fieldset className={fieldsetClass}>
         <legend className={legendClass}>Opening</legend>
-        <div className="grid gap-4 sm:grid-cols-[8rem_1fr]">
-          <TextField name="openingHymnNumber" label="Hymn #" type="number" values={values} errors={errors.openingHymnNumber} />
+        <div className="grid gap-4 sm:grid-cols-[12rem_1fr]">
+          <TextField name="openingHymnNumber" label="Opening hymn number" type="number" values={values} errors={errors.openingHymnNumber} />
           <TextField name="openingHymnTitle" label="Opening hymn title" values={values} errors={errors.openingHymnTitle} />
         </div>
         <TextField name="openingPrayer" label="Opening prayer" values={values} errors={errors.openingPrayer} />
@@ -213,8 +213,8 @@ export default function MeetingForm({ action, meeting, submitLabel }: MeetingFor
 
       <fieldset className={fieldsetClass}>
         <legend className={legendClass}>Sacrament</legend>
-        <div className="grid gap-4 sm:grid-cols-[8rem_1fr]">
-          <TextField name="sacramentHymnNumber" label="Hymn #" type="number" values={values} errors={errors.sacramentHymnNumber} />
+        <div className="grid gap-4 sm:grid-cols-[12rem_1fr]">
+          <TextField name="sacramentHymnNumber" label="Sacrament hymn number" type="number" values={values} errors={errors.sacramentHymnNumber} />
           <TextField name="sacramentHymnTitle" label="Sacrament hymn title" values={values} errors={errors.sacramentHymnTitle} />
         </div>
       </fieldset>
@@ -232,8 +232,8 @@ export default function MeetingForm({ action, meeting, submitLabel }: MeetingFor
 
       <fieldset className={fieldsetClass}>
         <legend className={legendClass}>Closing</legend>
-        <div className="grid gap-4 sm:grid-cols-[8rem_1fr]">
-          <TextField name="closingHymnNumber" label="Hymn #" type="number" values={values} errors={errors.closingHymnNumber} />
+        <div className="grid gap-4 sm:grid-cols-[12rem_1fr]">
+          <TextField name="closingHymnNumber" label="Closing hymn number" type="number" values={values} errors={errors.closingHymnNumber} />
           <TextField name="closingHymnTitle" label="Closing hymn title" values={values} errors={errors.closingHymnTitle} />
         </div>
         <TextField name="closingPrayer" label="Closing prayer" values={values} errors={errors.closingPrayer} />

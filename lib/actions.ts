@@ -13,8 +13,13 @@ import type { SpeakerItem } from '@/lib/types';
 
 // ---------- Validación con Zod ----------
 
+// Las columnas de texto en la BD son varchar(255)
 const requiredText = (label: string) =>
-  z.string().trim().min(1, { error: `${label} is required.` });
+  z
+    .string()
+    .trim()
+    .min(1, { error: `${label} is required.` })
+    .max(255, { error: `${label} must be 255 characters or fewer.` });
 
 const hymnNumber = (label: string) =>
   z.coerce
@@ -115,6 +120,23 @@ function toMeetingInput(data: z.infer<typeof MeetingFormSchema>): MeetingInput {
   };
 }
 
+// La tabla tiene UNIQUE (date): Postgres responde con el código 23505
+function isDuplicateDateError(error: unknown): boolean {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    (error as { code?: string }).code === '23505'
+  );
+}
+
+function duplicateDateState(values: Record<string, string>): MeetingFormState {
+  return {
+    message: 'Please fix the highlighted fields and try again.',
+    errors: { date: ['A meeting is already scheduled for this date.'] },
+    values,
+  };
+}
+
 function revalidateMeetings() {
   // 'layout' revalida /meetings y todas sus subrutas (/meetings/[id], /meetings/current)
   revalidatePath('/meetings', 'layout');
@@ -141,6 +163,7 @@ export async function createMeeting(
   try {
     await addMeeting(toMeetingInput(parsed.data));
   } catch (error) {
+    if (isDuplicateDateError(error)) return duplicateDateState(values);
     console.error('createMeeting failed:', error);
     throw new Error('We could not save the meeting. Please try again.');
   }
@@ -169,6 +192,7 @@ export async function updateMeeting(
   try {
     updated = await updateMeetingInDb(id, toMeetingInput(parsed.data));
   } catch (error) {
+    if (isDuplicateDateError(error)) return duplicateDateState(values);
     console.error(`updateMeeting(${id}) failed:`, error);
     throw new Error('We could not update the meeting. Please try again.');
   }
