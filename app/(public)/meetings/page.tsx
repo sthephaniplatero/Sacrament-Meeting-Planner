@@ -104,7 +104,7 @@ async function MeetingsListContent({
       {meetings.length > 0 ? (
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
           {meetings.map((meeting: SacramentMeeting) => (
-            <MeetingCard key={meeting.id} meeting={meeting} />
+            <MeetingCard key={meeting.id} meeting={meeting} headingLevel="h2" />
           ))}
         </div>
       ) : (

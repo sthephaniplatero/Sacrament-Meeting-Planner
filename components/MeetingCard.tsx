@@ -4,6 +4,8 @@ import DeleteMeetingButton from '@/components/DeleteMeetingButton';
 
 export interface MeetingCardProps {
   readonly meeting: SacramentMeeting;
+  // Nivel del título según dónde se use la tarjeta (para no saltar niveles)
+  readonly headingLevel?: 'h2' | 'h3';
 }
 
 const MEETING_TYPE_LABELS: Record<MeetingType, string> = {
@@ -31,7 +33,11 @@ function formatMeetingDate(isoDate: string): string {
   }).format(dateObj);
 }
 
-export default function MeetingCard({ meeting }: Readonly<MeetingCardProps>) {
+export default function MeetingCard({
+  meeting,
+  headingLevel = 'h3',
+}: Readonly<MeetingCardProps>) {
+  const Heading = headingLevel;
   const speakerCount: number = meeting.speakers.filter(
     (item: SpeakerItem) => item.type === 'speaker'
   ).length;
@@ -50,11 +56,11 @@ export default function MeetingCard({ meeting }: Readonly<MeetingCardProps>) {
             <p className="text-xs font-semibold uppercase tracking-widest text-accent">
               Sunday Worship Service
             </p>
-            <h3 className="mt-0.5 text-lg font-bold text-foreground group-hover:text-primary transition-colors">
+            <Heading className="mt-0.5 text-lg font-bold text-foreground group-hover:text-primary transition-colors">
               <time dateTime={meeting.date}>
                 {formatMeetingDate(meeting.date)}
               </time>
-            </h3>
+            </Heading>
           </div>
           <span
             className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ring-1 ring-inset ${
