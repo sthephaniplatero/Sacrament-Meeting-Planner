@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import type { MeetingType, SacramentMeeting, SpeakerItem } from '@/lib/types';
+import DeleteMeetingButton from '@/components/DeleteMeetingButton';
 
 export interface MeetingCardProps {
   readonly meeting: SacramentMeeting;
@@ -121,7 +122,19 @@ export default function MeetingCard({ meeting }: Readonly<MeetingCardProps>) {
           )}
         </div>
 
-        <div className="flex items-center gap-3">
+        <Link
+            href={`/meetings/${meeting.id}/edit`}
+            className="font-semibold text-primary hover:underline"
+          >
+            Edit<span className="sr-only"> meeting on {formatMeetingDate(meeting.date)}</span>
+          </Link>
+          <DeleteMeetingButton
+            id={meeting.id}
+            label={formatMeetingDate(meeting.date)}
+        />
+
+
+        <div className="flex flex-wrap items-center gap-3">
           <Link
             href={`/meetings/${meeting.id}?print=true`}
             className="font-semibold text-primary hover:underline"
