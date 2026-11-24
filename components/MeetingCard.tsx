@@ -1,6 +1,7 @@
+import { Suspense } from 'react';
 import Link from 'next/link';
 import type { MeetingType, SacramentMeeting, SpeakerItem } from '@/lib/types';
-import DeleteMeetingButton from '@/components/DeleteMeetingButton';
+import MeetingAdminActions from '@/components/MeetingAdminActions';
 
 export interface MeetingCardProps {
   readonly meeting: SacramentMeeting;
@@ -141,16 +142,12 @@ export default function MeetingCard({
           >
             Open Agenda &rarr;
           </Link>
-          <Link
-            href={`/meetings/${meeting.id}/edit`}
-            className="font-semibold text-primary hover:underline"
-          >
-            Edit<span className="sr-only"> meeting on {formatMeetingDate(meeting.date)}</span>
-          </Link>
-          <DeleteMeetingButton
-            id={meeting.id}
-            label={formatMeetingDate(meeting.date)}
-          />
+          <Suspense fallback={null}>
+            <MeetingAdminActions
+              id={meeting.id}
+              label={formatMeetingDate(meeting.date)}
+            />
+          </Suspense>
         </div>
       </div>
     </article>

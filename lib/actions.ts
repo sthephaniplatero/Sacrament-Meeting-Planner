@@ -11,7 +11,7 @@ import {
 } from '@/lib/meetings-db';
 import type { SpeakerItem } from '@/lib/types';
 import { AuthError } from 'next-auth';
-import { signIn } from '@/auth';
+import { auth, signIn, signOut } from '@/auth';
 
 // ---------- Validación con Zod ----------
 
@@ -145,12 +145,23 @@ function revalidateMeetings() {
   revalidatePath('/');
 }
 
+// Las Server Actions se pueden llamar con un POST directo, sin pasar por
+// las páginas protegidas por proxy.ts, así que cada una revisa la sesión.
+async function requireUser() {
+  const session = await auth();
+  if (!session?.user) {
+    redirect('/login');
+  }
+  return session.user;
+}
+
 // ---------- Server Actions ----------
 
 export async function createMeeting(
   prevState: MeetingFormState,
   formData: FormData
 ): Promise<MeetingFormState> {
+  await requireUser();
   const values = readFormValues(formData);
   const parsed = parseMeetingForm(values);
 
@@ -179,6 +190,7 @@ export async function updateMeeting(
   prevState: MeetingFormState,
   formData: FormData
 ): Promise<MeetingFormState> {
+  await requireUser();
   const values = readFormValues(formData);
   const parsed = parseMeetingForm(values);
 
@@ -208,6 +220,7 @@ export async function updateMeeting(
 }
 
 export async function deleteMeeting(formData: FormData): Promise<void> {
+  await requireUser();
   const parsedId = z.coerce.number().int().positive().safeParse(formData.get('id'));
   if (!parsedId.success) {
     throw new Error('Invalid meeting id.');
@@ -281,4 +294,8 @@ export async function authenticate(
   }
 
   return { message: null, errors: {}, email };
+}
+
+export async function signOutAction(): Promise<void> {
+  await signOut({ redirectTo: '/' });
 }

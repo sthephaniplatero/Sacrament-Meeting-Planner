@@ -1,7 +1,9 @@
 import { cacheLife } from 'next/cache';
 import Image from 'next/image';
 import Link from 'next/link';
+import { Suspense } from 'react';
 import NavLinks from './NavLinks';
+import AuthStatus from './AuthStatus';
 
 export interface HeaderProps {
   readonly wardName?: string;
@@ -78,7 +80,13 @@ export default async function Header({
           </div>
         </div>
 
-        <NavLinks />
+        <div className="flex flex-wrap items-center gap-3">
+          <NavLinks />
+          {/* La sesión es dato de runtime: se transmite aparte del resto del header */}
+          <Suspense fallback={null}>
+            <AuthStatus />
+          </Suspense>
+        </div>
       </div>
     </header>
   );

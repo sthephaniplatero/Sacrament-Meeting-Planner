@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-// TODO Week 05: proteger esta sección con autenticación
+// Protegida por proxy.ts (Auth.js): solo el obispado con sesión iniciada
 export default function AdminLayout({
   children,
 }: {
