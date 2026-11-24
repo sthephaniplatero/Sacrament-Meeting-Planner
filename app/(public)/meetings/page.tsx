@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
 import Link from 'next/link';
 import MeetingCard from '@/components/MeetingCard';
+import NewMeetingButton from '@/components/NewMeetingButton';
 import { MeetingSearch } from '@/components/MeetingSearch';
 import { Pagination } from '@/components/Pagination';
 import { getMeetings, getMeetingsTotalPages } from '@/lib/meetings-db';
@@ -167,6 +168,12 @@ export default function MeetingsPage(props: Readonly<MeetingsPageProps>) {
             Select a Sunday meeting below to view its full agenda or open a
             print-ready program.
           </p>
+          {/* Solo aparece si el obispado inició sesión */}
+          <div className="mt-3 empty:hidden">
+            <Suspense fallback={null}>
+              <NewMeetingButton />
+            </Suspense>
+          </div>
         </div>
 
         <Suspense fallback={null}>
