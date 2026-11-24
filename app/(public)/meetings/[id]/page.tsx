@@ -5,6 +5,8 @@ import MeetingDetail from '@/components/MeetingDetail';
 import { getMeetingById } from '@/lib/meetings-db';
 import type { SacramentMeeting } from '@/lib/types';
 import MeetingsLoading from '../loading';
+import type { Metadata } from 'next';
+import { defaultOgImage } from '@/lib/site-metadata';
 
 export interface MeetingDetailPageProps {
   readonly params: Promise<{ id: string }>;
@@ -166,6 +168,48 @@ async function MeetingDetailContent({
       <MeetingDetail meeting={result.meeting} printMode={isPrintMode} />
     </div>
   );
+}
+
+// Título y descripción con los datos de la reunión (ej. "Sunday, November 22, 2026")
+export async function generateMetadata({
+  params,
+}: Pick<MeetingDetailPageProps, 'params'>): Promise<Metadata> {
+  const { id } = await params;
+  const meetingId = Number(id);
+  const meeting =
+    Number.isInteger(meetingId) && meetingId > 0 && meetingId <= 2147483647
+      ? await getMeetingById(meetingId)
+      : undefined;
+
+  if (!meeting) {
+    return { title: 'Meeting Not Found', robots: { index: false } };
+  }
+
+  const [year, month, day] = meeting.date.split('-').map(Number);
+  const dateLabel = new Intl.DateTimeFormat('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  }).format(new Date(year, month - 1, day));
+
+  const speakers = meeting.speakers
+    .filter((item) => item.type === 'speaker')
+    .map((item) => item.name);
+  const description =
+    `Sacrament meeting program for ${dateLabel}. Conducting: ${meeting.conducting}.` +
+    (speakers.length > 0 ? ` Speakers: ${speakers.join(', ')}.` : '');
+
+  return {
+    title: `Sacrament Meeting — ${dateLabel}`,
+    description,
+    openGraph: {
+      title: `Sacrament Meeting — ${dateLabel} | Pioneer 1st Ward`,
+      description,
+      url: `/meetings/${meeting.id}`,
+      images: [defaultOgImage],
+    },
+  };
 }
 
 export default function MeetingDetailPage(

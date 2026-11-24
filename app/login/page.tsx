@@ -3,7 +3,9 @@ import type { Metadata } from 'next';
 import LoginForm from '@/components/LoginForm';
 
 export const metadata: Metadata = {
-  title: 'Leader Sign In — Sacrament Meeting Planner',
+  title: 'Leader Sign In',
+  description: 'Sign in for bishopric members who manage the sacrament meeting schedule.',
+  robots: { index: false, follow: false }, // no queremos el login en buscadores
 };
 
 export default function LoginPage() {

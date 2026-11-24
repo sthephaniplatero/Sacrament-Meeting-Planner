@@ -6,6 +6,21 @@ import { Pagination } from '@/components/Pagination';
 import { getMeetings, getMeetingsTotalPages } from '@/lib/meetings-db';
 import type { SacramentMeeting } from '@/lib/types';
 import MeetingsLoading from './loading';
+import type { Metadata } from 'next';
+import { defaultOgImage } from '@/lib/site-metadata';
+
+export const metadata: Metadata = {
+  title: 'All Meetings',
+  description:
+    'Browse every Pioneer 1st Ward sacrament meeting: dates, presiding and conducting leaders, hymns, speakers, and printable programs.',
+  openGraph: {
+    title: 'All Sacrament Meetings | Pioneer 1st Ward',
+    description:
+      'Browse every sacrament meeting agenda, with speakers, hymns, and printable programs.',
+    url: '/meetings',
+    images: [defaultOgImage],
+  },
+};
 
 type MeetingsSearchParams = {
   query?: string;

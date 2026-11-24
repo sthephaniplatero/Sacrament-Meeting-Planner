@@ -1,4 +1,10 @@
 import Link from 'next/link';
+import type { Metadata } from 'next';
+
+// Las herramientas del obispado no deben aparecer en buscadores
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+};
 
 // Protegida por proxy.ts (Auth.js): solo el obispado con sesión iniciada
 export default function AdminLayout({

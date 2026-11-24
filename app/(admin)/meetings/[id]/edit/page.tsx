@@ -3,6 +3,12 @@ import { notFound } from 'next/navigation';
 import MeetingForm from '@/components/MeetingForm';
 import { updateMeeting } from '@/lib/actions';
 import { getMeetingById } from '@/lib/meetings-db';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Edit Meeting',
+  description: 'Update a sacrament meeting agenda.',
+};
 
 // cacheComponents está activo: `params` es dato de runtime, así que se lee
 // dentro de <Suspense> para que la ruta pueda prerenderizarse.
