@@ -10,6 +10,8 @@ import {
   type MeetingInput,
 } from '@/lib/meetings-db';
 import type { SpeakerItem } from '@/lib/types';
+import { AuthError } from 'next-auth';
+import { signIn } from '@/auth';
 
 // ---------- Validación con Zod ----------
 
@@ -220,4 +222,63 @@ export async function deleteMeeting(formData: FormData): Promise<void> {
 
   revalidateMeetings();
   redirect('/meetings');
+}
+
+// ---------- Autenticación ----------
+
+export type LoginState = {
+  message: string | null;
+  errors: { email?: string[]; password?: string[] };
+  email: string; // para no borrar el correo si falla el login
+};
+
+// Solo permite regresar a rutas de esta misma app (evita "open redirects")
+function safeRedirectPath(target: FormDataEntryValue | null): string {
+  if (typeof target !== 'string' || target === '') return '/meetings';
+  try {
+    const url = new URL(target, 'http://placeholder.local');
+    const path = url.pathname + url.search;
+    return path.startsWith('/') && !path.startsWith('//') && path !== '/login'
+      ? path
+      : '/meetings';
+  } catch {
+    return '/meetings';
+  }
+}
+
+export async function authenticate(
+  prevState: LoginState,
+  formData: FormData
+): Promise<LoginState> {
+  const email = String(formData.get('email') ?? '').trim();
+  const password = String(formData.get('password') ?? '');
+
+  const errors: LoginState['errors'] = {};
+  if (!email) errors.email = ['Email is required.'];
+  if (!password) errors.password = ['Password is required.'];
+  if (errors.email || errors.password) {
+    return { message: 'Please fill in the highlighted fields.', errors, email };
+  }
+
+  try {
+    await signIn('credentials', {
+      email,
+      password,
+      redirectTo: safeRedirectPath(formData.get('redirectTo')),
+    });
+  } catch (error) {
+    if (error instanceof AuthError) {
+      return {
+        message:
+          error.type === 'CredentialsSignin'
+            ? 'Invalid email or password.'
+            : 'Something went wrong. Please try again.',
+        errors: {},
+        email,
+      };
+    }
+    throw error; // signIn redirige lanzando un error especial: hay que dejarlo pasar
+  }
+
+  return { message: null, errors: {}, email };
 }
